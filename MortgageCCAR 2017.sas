@@ -254,6 +254,25 @@
 %mend m_create_masterdata;
 ;
 %macro m_create_vintage_source_loop(yearin=,monthin=,no_of_quarter=,source_ind=, dsnout=);
+
+**ADD A CHANGE**;
+%macro m_create_forecasting_data(datain=,dataout=,no_of_qtr_to_forecast=,is_origination_data=0);
+
+	%let datasetin = &datain.;
+
+	%if %eval(&is_origination_data.) %then %do;
+		%m_append_dsn(dsnin=&datasetin., dsnout=&dataout., delete_dsnin=0);
+	%end;
+
+	%do i=1 %to &no_of_qtr_to_forecast. %by 1;
+		%if %eval(&i.gt 1) %then %do;
+			%let j=%eval(&i.-1);
+			%let datasetin = &datain.&j.;
+		%end;
+		data &datain.&i.;
+			set &datasetin.;
+/*			last date of the last month of the next quart
+
 /*possible value of source_ind is any one of the following: R - RDM, M - MDS, RFO - F*/
 	%let date_end = %sysfunc(intnx(month,%sysfunc(inputn(&monthin.01&yearin.,mmddyy10.)),0,e));
 	%let date_start = %sysfunc(intnx(qtr,%sysfunc(inputn(&monthin.01&yearin.,mmddyy10.)),%eval(-1*&no_of_quarter.),e));
@@ -1960,7 +1979,7 @@ within 00_config;
                    -(0.0157807007*T2QHOFHOPI)+(0.0145807112*TLBR2)
                    -(0.0402447050*TLOGCBC);      
         end; 
-/*“The primary-residence indicator field (occupancy) is muted while calculating LGD rate for 1st lien HELOCs.”*/
+/*Â“The primary-residence indicator field (occupancy) is muted while calculating LGD rate for 1st lien HELOCs.Â”*/
 		else if upcase(pd_group) = "HELOC" and existing_flag = 1 then do;
 			if (loan_lien_position = 1 and existing_flag = 1)  then                                            
 			   LGD=0.231728+(0.176502*Calculated_CLTV)             
