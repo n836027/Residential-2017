@@ -159,7 +159,30 @@
     					where upcase(pd_group) in (&product_list.)
     					and t0.status_fk=1 and loan_servicing_system_fk < 9000
     	       ;quit;	
-    				
+	       *make some edits*;
+	       
+	       %end;
+    		%else %do;
+    			proc sql;
+    				create table table_main_temp as
+    					select distinct
+    						t1.servicing_acct_number
+    						,datepart(t1.effective_date_pk) format=mmddyy10. as effective_date
+    						,datepart(t1.effective_date_pk) format=mmddyy10. as period_date
+    						,calculated period_date format=yyq6. as period
+    						,intck("qtr","01Jan1960"d, calculated period) as qtime
+    						,1 as existing_flag
+    						,. format=mmddyy10. as vintage
+    						,intck("months", datepart(t2.
+	       
+	       
+	       
+	       
+	       
+	       
+	       
+	       
+	       
     		%end;
     		%else %do;
     			proc sql;
